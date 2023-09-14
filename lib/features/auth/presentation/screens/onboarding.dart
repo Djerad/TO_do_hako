@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:todoapp/core/databse/cashhelper.dart';
+import 'package:todoapp/core/services/services_locator.dart';
 import 'package:todoapp/core/utils/appassets.dart';
 import 'package:todoapp/core/utils/appcolors.dart';
 import 'package:todoapp/core/utils/appstrings.dart';
+import 'package:todoapp/features/auth/presentation/screens/home.dart';
+import 'package:todoapp/features/auth/presentation/screens/splashscreen.dart';
 
 class OnboardingScreen extends StatelessWidget {
   PageController _pageController = PageController();
@@ -21,7 +25,9 @@ class OnboardingScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        _pageController.jumpToPage(2);
+                      },
                       child: Text(
                         "Skip",
                         style: GoogleFonts.lato(
@@ -47,7 +53,7 @@ class OnboardingScreen extends StatelessWidget {
                     SmoothPageIndicator(
                         controller: _pageController, // PageController
                         count: 3,
-                        effect: WormEffect(), // your preferred effect
+                        effect: const WormEffect(), // your preferred effect
                         onDotClicked: (index) {}),
                     Text(
                       Onboardingmodel.lisyonboarding[index].title,
@@ -56,7 +62,7 @@ class OnboardingScreen extends StatelessWidget {
                           fontSize: 23,
                           fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     Text(
@@ -75,19 +81,40 @@ class OnboardingScreen extends StatelessWidget {
                               ? TextButton(
                                   onPressed: () {
                                     _pageController.previousPage(
-                                        duration: Duration(milliseconds: 900),
+                                        duration:
+                                            const Duration(milliseconds: 900),
                                         curve: Curves.easeInOut);
                                   },
-                                  child: Text("Back"))
+                                  child: const Text("Back"))
                               : Container(),
-                          MaterialButton(
-                              onPressed: () {
-                                _pageController.nextPage(
-                                    duration: Duration(milliseconds: 900),
-                                    curve: Curves.easeInOut);
-                              },
-                              color: Appcolor.purple,
-                              child: Text("Continue"))
+                          index != 2
+                              ? MaterialButton(
+                                  onPressed: () {
+                                    _pageController.nextPage(
+                                        duration:
+                                            const Duration(milliseconds: 900),
+                                        curve: Curves.easeInOut);
+                                  },
+                                  color: Appcolor.purple,
+                                  child: const Text("Continue"))
+                              : MaterialButton(
+                                  onPressed: () async {
+                                    print("hhhhhhhhh");
+                                    await sl<CashHelper>().savedata(
+                                        key: "onboarding", value: true);
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                               Homepage()),
+                                    );
+                                    _pageController.nextPage(
+                                        duration:
+                                            const Duration(milliseconds: 900),
+                                        curve: Curves.easeInOut);
+                                  },
+                                  color: Appcolor.purple,
+                                  child: const Text("Get Started"))
                         ],
                       ),
                     ),
@@ -98,7 +125,7 @@ class OnboardingScreen extends StatelessWidget {
             const SizedBox(
               height: 40,
             ),
-            SizedBox(
+            const SizedBox(
               height: 90,
             ),
           ],
